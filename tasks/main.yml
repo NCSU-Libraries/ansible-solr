@@ -1,0 +1,55 @@
+---
+- name: download solr
+  get_url:
+    url: http://archive.apache.org/dist/lucene/solr/{{version}}/solr-{{version}}.tgz
+    dest: /opt/solr-{{version}}.tgz
+- name: untar solr
+  unarchive:
+    copy: no
+    src: /opt/solr-{{version}}.tgz
+    dest: /opt
+- name: remove tar file
+  file:
+    path: /opt/solr-{{version}}.tgz
+    state: absent
+- name: symlink solr
+  file:
+    src: /opt/solr-{{version}}
+    dest: /opt/solr
+    state: link
+- name: solr should own solr binaries
+  file:
+    path: /opt/solr-{{version}}
+    owner: solr
+    recurse: yes
+- name: add solr user to deploy group
+  user:
+    name: solr
+    group: solr
+    groups: "{{group}}"
+    append: yes
+- name: confdir should be readable by deploy group
+  file:
+    path: "{{confdir}}"
+    recurse: yes
+    group: "{{group}}"
+    mode: "g+rX"
+- name: create core
+  become_user: solr
+  shell: bin/solr create -c "{{item}}"
+  args:
+    chdir: /opt/solr
+  with_items: "{{cores}}"
+- name: remove conf directory
+  become_user: solr
+  file:
+    path: /opt/solr/server/solr/{{item}}/conf
+    state: absent
+  with_items: "{{cores}}"
+- name: symlink confdir
+  become_user: solr
+  file:
+    src: "{{confdir}}"
+    dest: /opt/solr/server/solr/{{item}}/conf
+    state: link
+  with_items: "{{cores}}"
