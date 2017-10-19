@@ -1,4 +1,4 @@
-# ansible_solr_core
+# ansible-solr
 
 Ansible role to install Apache Solr and create a core that uses configuration
 files contained in a project repo. For use with many NCSU open source projects.
