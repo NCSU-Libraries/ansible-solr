@@ -39,12 +39,12 @@
     owner: "{{solr_user}}"
     group: "{{group}}"
     recurse: yes
-- name: confdir should be readable by deploy group
-  file:
-    path: "{{confdir}}"
-    recurse: yes
-    group: "{{group}}"
-    mode: ug+rX
+# - name: confdir should be readable by deploy group
+#   file:
+#     path: "{{confdir}}"
+#     recurse: yes
+#     group: "{{group}}"
+#     mode: ug+rX
 - name: restart solr
   become_user: "{{solr_user}}"
   command: bin/solr restart
@@ -74,4 +74,5 @@
     src: "{{confdir}}"
     dest: /opt/solr/server/solr/{{item}}/conf
     state: link
+    force: yes
   with_items: "{{cores}}"
