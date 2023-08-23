@@ -5,7 +5,7 @@
   register: solr_install_path_status
 - name: download solr
   get_url:
-    url: http://archive.apache.org/dist/lucene/solr/{{version}}/solr-{{version}}.tgz
+    url: https://archive.apache.org/dist/solr/solr/{{version}}/solr-{{version}}.tgz
     dest: /opt/solr-{{version}}.tgz
   when: solr_install_path_status.stat.isdir is not defined
   register: solr_download_status
